@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>주사위 베팅 게임</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+  }
+
+  .container {
+    text-align: center;
+    padding: 1.8rem;
+    background: rgba(255,255,255,0.05);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 520px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #e0e0e0;
+  }
+
+  /* ── 코인 표시 ── */
+  .coin-display {
+    font-size: 1.3rem;
+    margin-bottom: 1.2rem;
+    background: rgba(255,215,0,0.12);
+    border: 1px solid rgba(255,215,0,0.3);
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 30px;
+    color: #ffd700;
+  }
+
+  .coin-display span { font-size: 1.6rem; }
+
+  /* ── 예상 숫자 ── */
+  .predict-section { margin-bottom: 1.2rem; }
+
+  .predict-section > label {
+    display: block;
+    font-size: 0.95rem;
+    color: #aaa;
+    margin-bottom: 0.6rem;
+  }
+
+  .predict-rows {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .predict-row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .btn-num {
+    width: 40px;
+    height: 40px;
+    font-size: 1.05rem;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .btn-num:hover {
+    background: rgba(255,255,255,0.18);
+    border-color: rgba(255,255,255,0.4);
+  }
+  .btn-num.active {
+    background: #667eea;
+    border-color: #667eea;
+    box-shadow: 0 0 12px rgba(102,126,234,0.5);
+  }
+
+  /* ── UP / DOWN ── */
+  .direction-section { margin-bottom: 1.2rem; }
+
+  .direction-section > label {
+    display: block;
+    font-size: 0.95rem;
+    color: #aaa;
+    margin-bottom: 0.5rem;
+  }
+
+  .dir-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .btn-dir {
+    padding: 10px 32px;
+    font-size: 1.1rem;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+    min-width: 100px;
+  }
+  .btn-dir:hover {
+    background: rgba(255,255,255,0.18);
+    border-color: rgba(255,255,255,0.4);
+  }
+  .btn-dir.active-up {
+    background: #4ecdc4;
+    border-color: #4ecdc4;
+    box-shadow: 0 0 12px rgba(78,205,196,0.5);
+  }
+  .btn-dir.active-down {
+    background: #ff6b6b;
+    border-color: #ff6b6b;
+    box-shadow: 0 0 12px rgba(255,107,107,0.5);
+  }
+
+  .selected-dir {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    color: #a8d8ea;
+    min-height: 1.3rem;
+  }
+
+  /* ── 베팅 금액 ── */
+  .bet-section { margin-bottom: 1.2rem; }
+
+  .bet-section > label {
+    display: block;
+    font-size: 0.95rem;
+    color: #aaa;
+    margin-bottom: 0.5rem;
+  }
+
+  .bet-input-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .bet-input {
+    width: 120px;
+    padding: 10px 12px;
+    font-size: 1.1rem;
+    text-align: center;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .bet-input:focus {
+    border-color: #667eea;
+  }
+  .bet-input::placeholder { color: #666; }
+
+  .bet-error {
+    color: #ff7a7a;
+    font-size: 0.85rem;
+    min-height: 1rem;
+    margin-top: 0.4rem;
+  }
+
+  .selected-bet {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    color: #a8d8ea;
+    min-height: 1.3rem;
+  }
+
+  /* ── 주사위 ── */
+  .dice-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 1.2rem;
+    min-height: 120px;
+    align-items: center;
+  }
+
+  .die {
+    width: 110px;
+    height: 110px;
+    background: #fff;
+    border-radius: 16px;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    user-select: none;
+  }
+  .die.rolling { animation: shake 0.5s ease-in-out; }
+
+  @keyframes shake {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    15%      { transform: rotate(-18deg) scale(1.12); }
+    30%      { transform: rotate(14deg) scale(1.1); }
+    45%      { transform: rotate(-10deg) scale(1.06); }
+    60%      { transform: rotate(8deg)  scale(1.04); }
+    75%      { transform: rotate(-5deg) scale(1); }
+    90%      { transform: rotate(3deg)  scale(1); }
+  }
+
+  .pip {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #222;
+    border-radius: 50%;
+  }
+
+  .die[data-value="1"] .pip { top: 50%; left: 50%; margin: -10px 0 0 -10px; }
+  .die[data-value="2"] .pip:nth-child(1) { top: 16%; left: 84%; margin: -10px 0 0 -10px; }
+  .die[data-value="2"] .pip:nth-child(2) { top: 84%; left: 16%; margin: -10px 0 0 -10px; }
+  .die[data-value="3"] .pip:nth-child(1) { top: 16%; left: 84%; margin: -10px 0 0 -10px; }
+  .die[data-value="3"] .pip:nth-child(2) { top: 50%; left: 50%; margin: -10px 0 0 -10px; }
+  .die[data-value="3"] .pip:nth-child(3) { top: 84%; left: 16%; margin: -10px 0 0 -10px; }
+  .die[data-value="4"] .pip:nth-child(1) { top: 16%; left: 16%; margin: -10px 0 0 -10px; }
+  .die[data-value="4"] .pip:nth-child(2) { top: 16%; left: 84%; margin: -10px 0 0 -10px; }
+  .die[data-value="4"] .pip:nth-child(3) { top: 84%; left: 16%; margin: -10px 0 0 -10px; }
+  .die[data-value="4"] .pip:nth-child(4) { top: 84%; left: 84%; margin: -10px 0 0 -10px; }
+  .die[data-value="5"] .pip:nth-child(1) { top: 16%; left: 16%; margin: -10px 0 0 -10px; }
+  .die[data-value="5"] .pip:nth-child(2) { top: 16%; left: 84%; margin: -10px 0 0 -10px; }
+  .die[data-value="5"] .pip:nth-child(3) { top: 50%; left: 50%; margin: -10px 0 0 -10px; }
+  .die[data-value="5"] .pip:nth-child(4) { top: 84%; left: 16%; margin: -10px 0 0 -10px; }
+  .die[data-value="5"] .pip:nth-child(5) { top: 84%; left: 84%; margin: -10px 0 0 -10px; }
+  .die[data-value="6"] .pip:nth-child(1) { top: 16%; left: 16%; margin: -10px 0 0 -10px; }
+  .die[data-value="6"] .pip:nth-child(2) { top: 16%; left: 50%; margin: -10px 0 0 -10px; }
+  .die[data-value="6"] .pip:nth-child(3) { top: 16%; left: 84%; margin: -10px 0 0 -10px; }
+  .die[data-value="6"] .pip:nth-child(4) { top: 84%; left: 16%; margin: -10px 0 0 -10px; }
+  .die[data-value="6"] .pip:nth-child(5) { top: 84%; left: 50%; margin: -10px 0 0 -10px; }
+  .die[data-value="6"] .pip:nth-child(6) { top: 84%; left: 84%; margin: -10px 0 0 -10px; }
+
+  /* ── 결과 ── */
+  .result {
+    font-size: 1.2rem;
+    min-height: 2.2rem;
+    margin: 1rem 0 1.2rem;
+    color: #a8d8ea;
+  }
+  .result.win  { color: #7ae07a; font-size: 1.6rem; font-weight: bold; }
+  .result.lose { color: #ff7a7a; font-size: 1.4rem; }
+
+  @keyframes popIn {
+    0%   { transform: scale(0.6); opacity: 0; }
+    70%  { transform: scale(1.1); }
+    100% { transform: scale(1);   opacity: 1; }
+  }
+
+  /* ── 버튼 ── */
+  .button {
+    padding: 12px 36px;
+    font-size: 1.1rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+  }
+  .button:hover  { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102,126,234,0.6); }
+  .button:active { transform: translateY(1px); }
+  .button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .new-game-btn {
+    margin-top: 0.8rem;
+    padding: 8px 20px;
+    font-size: 0.85rem;
+    background: rgba(255,255,255,0.1);
+    color: #ccc;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .new-game-btn:hover { background: rgba(255,255,255,0.2); }
+
+  .rules {
+    margin-top: 1.2rem;
+    font-size: 0.8rem;
+    color: #666;
+    line-height: 1.6;
+    text-align: left;
+    background: rgba(0,0,0,0.2);
+    padding: 10px 14px;
+    border-radius: 10px;
+  }
+  .rules p { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎲 주사위 베팅 게임</h1>
+
+    <div class="coin-display">보유 코인: <span id="coins">500</span>G</div>
+
+    <div class="predict-section">
+      <label>예상할 합 (2 ~ 12) 을 선택하세요</label>
+      <div class="predict-rows" id="predictRows">
+        <div class="predict-row" id="row1"></div>
+        <div class="predict-row" id="row2"></div>
+      </div>
+    </div>
+
+    <div class="direction-section">
+      <label>나올 합이 예상 숫자보다 높을지 낮을지 선택하세요</label>
+      <div class="dir-row">
+        <button class="btn-dir" id="upBtn">⬆ UP</button>
+        <button class="btn-dir" id="downBtn">⬇ DOWN</button>
+      </div>
+      <div class="selected-dir" id="selectedDir">선택: 없음</div>
+    </div>
+
+    <div class="bet-section">
+      <label>베팅할 금액을 숫자로 입력하세요 (최대 보유 코인 이내)</label>
+      <div class="bet-input-row">
+        <input type="number" class="bet-input" id="betInput"
+               placeholder="베팅 금액" min="1" max="500" inputmode="numeric">
+      </div>
+      <div class="bet-error" id="betError"></div>
+      <div class="selected-bet" id="selectedBet">베팅: 미설정</div>
+    </div>
+
+    <div class="dice-wrapper">
+      <div class="die" id="die1" data-value="1"><span class="pip"></span></div>
+      <div class="die" id="die2" data-value="1"><span class="pip"></span></div>
+    </div>
+
+    <div class="result" id="result"></div>
+
+    <button class="button" id="rollBtn">🎲 주사위 굴리기</button>
+    <button class="new-game-btn" id="newGameBtn">← 새로 시작 (코인 초기화)</button>
+
+    <div class="rules">
+      <p><strong>규칙</strong></p>
+      <p>• 예상 숫자 정확히 일치 → 베팅금 × 2 (원금 포함 2배 획득)</p>
+      <p>• UP 선택 & 나온 합 &gt; 예상 숫자 → 베팅금 + 베팅금의 절반 획득</p>
+      <p>• DOWN 선택 & 나온 합 &lt; 예상 숫자 → 베팅금 + 베팅금의 절반 획득</p>
+      <p>• 위 조건에 못 미치면 베팅금 전액 차감</p>
+      <p>• 베팅 금액이 보유 코인보다 크면 굴리기 불가</p>
+    </div>
+  </div>
+
+  <script>
+    /* ── 요소 ── */
+    const coinsEl      = document.getElementById('coins');
+    const row1         = document.getElementById('row1');
+    const row2         = document.getElementById('row2');
+    const upBtn        = document.getElementById('upBtn');
+    const downBtn      = document.getElementById('downBtn');
+    const selectedDir  = document.getElementById('selectedDir');
+    const betInput     = document.getElementById('betInput');
+    const betError     = document.getElementById('betError');
+    const selectedBet  = document.getElementById('selectedBet');
+    const die1         = document.getElementById('die1');
+    const die2         = document.getElementById('die2');
+    const result       = document.getElementById('result');
+    const rollBtn      = document.getElementById('rollBtn');
+    const newGameBtn   = document.getElementById('newGameBtn');
+
+    /* ── 상태 ── */
+    const STARTING_COINS = 500;
+    let coins = STARTING_COINS;
+    let selectedNum = 7;     // 기본 예상 숫자
+    let direction   = null;  // 'up' | 'down' | null
+    let isRolling   = false;
+
+    // 초기 주사위 눈
+    function fillPips(dieEl, value) {
+      dieEl.innerHTML = '';
+      for (let i = 0; i < value; i++) {
+        const pip = document.createElement('span');
+        pip.className = 'pip';
+        dieEl.appendChild(pip);
+      }
+      dieEl.dataset.value = value;
+    }
+    fillPips(die1, 1);
+    fillPips(die2, 1);
+
+    /* ── 예상 숫자 버튼 (2줄 배치) ── */
+    const NUMBERS = [];
+    for (let n = 2; n <= 12; n++) NUMBERS.push(n);
+
+    // 11개 → 윗줄 6개, 아랫줄 5개
+    const MID = 6;
+    const topNums    = NUMBERS.slice(0, MID);     // 2,3,4,5,6,7
+    const bottomNums = NUMBERS.slice(MID);        // 8,9,10,11,12
+
+    function makeNumButton(n) {
+      const btn = document.createElement('button');
+      btn.className = 'btn-num' + (n === selectedNum ? ' active' : '');
+      btn.textContent = n;
+      btn.dataset.num = n;
+      btn.addEventListener('click', () => {
+        if (isRolling) return;
+        selectedNum = n;
+        [...row1.children, ...row2.children].forEach(c =>
+          c.classList.toggle('active', +c.dataset.num === n));
+      });
+      return btn;
+    }
+
+    topNums.forEach(n => row1.appendChild(makeNumButton(n)));
+    bottomNums.forEach(n => row2.appendChild(makeNumButton(n)));
+
+    /* ── UP / DOWN ── */
+    function setDirection(dir) {
+      if (isRolling) return;
+      direction = dir;
+      upBtn.classList.toggle('active-up', dir === 'up');
+      upBtn.classList.toggle('active-down', false);
+      downBtn.classList.toggle('active-down', dir === 'down');
+      downBtn.classList.toggle('active-up', false);
+      selectedDir.textContent = dir === 'up' ? '선택: UP (더 높게)' :
+                                dir === 'down' ? '선택: DOWN (더 낮게)' : '선택: 없음';
+    }
+    upBtn.addEventListener('click', () => setDirection(direction === 'up' ? null : 'up'));
+    downBtn.addEventListener('click', () => setDirection(direction === 'down' ? null : 'down'));
+
+    /* ── 베팅 금액 입력 ── */
+    betInput.addEventListener('input', () => {
+      betError.textContent = '';
+      const val = parseInt(betInput.value, 10);
+      if (betInput.value === '' || isNaN(val) || val <= 0) {
+        selectedBet.textContent = '베팅: 미설정';
+        return;
+      }
+      if (val > coins) {
+        betError.textContent = '보유 코인(' + coins + 'G)을 초과할 수 없습니다.';
+        selectedBet.textContent = '베팅: ' + val + 'G (보유 초과)';
+        return;
+      }
+      selectedBet.textContent = '베팅: ' + val + 'G';
+    });
+
+    /* ── 코인 업데이트 ── */
+    function updateCoins(display = false) {
+      coinsEl.textContent = coins;
+      if (display) betInput.max = coins;
+    }
+    updateCoins(true);
+
+    betInput.max = coins;
+
+    /* ── 결과 표시 ── */
+    function showResult(text, type) {
+      result.textContent = text;
+      result.className = 'result ' + type;
+    }
+
+    /* ── 주사위 굴리기 ── */
+    function roll() {
+      if (isRolling) return;
+
+      // 입력값 파싱
+      const betRaw = parseInt(betInput.value, 10);
+      if (betInput.value === '' || isNaN(betRaw) || betRaw <= 0) {
+        betError.textContent = '베팅 금액을 입력하세요.';
+        return;
+      }
+      if (betRaw > coins) {
+        betError.textContent = '보유 코인(' + coins + 'G) 이하로만 베팅할 수 있습니다.';
+        return;
+      }
+      if (!direction) {
+        betError.textContent = 'UP 또는 DOWN을 선택하세요.';
+        return;
+      }
+
+      const bet = betRaw;
+      isRolling = true;
+      rollBtn.disabled = true;
+      betError.textContent = '';
+      result.textContent = '';
+      result.className = 'result';
+
+      // 굴리기 애니메이션
+      die1.classList.add('rolling');
+      die2.classList.add('rolling');
+
+      let count = 0;
+      const tick = setInterval(() => {
+        fillPips(die1, Math.floor(Math.random() * 6) + 1);
+        fillPips(die2, Math.floor(Math.random() * 6) + 1);
+        count++;
+        if (count > 10) {
+          clearInterval(tick);
+
+          const v1 = Math.floor(Math.random() * 6) + 1;
+          const v2 = Math.floor(Math.random() * 6) + 1;
+          const sum = v1 + v2;
+
+          fillPips(die1, v1);
+          fillPips(die2, v2);
+          die1.classList.remove('rolling');
+          die2.classList.remove('rolling');
+
+          let outcome = '';
+          let outcomeType = '';
+          let gain = 0;
+
+          if (sum === selectedNum) {
+            // 정확히 일치 → 2배
+            gain = bet * 2;
+            coins += gain;
+            outcome = '🎉 대성공! 예상 합 ' + selectedNum + ' 정확히 적중! ' +
+                      bet + 'G → ' + gain + 'G 획득 (보유: ' + coins + 'G)';
+            outcomeType = 'win';
+          } else if ((direction === 'up' && sum > selectedNum) ||
+                     (direction === 'down' && sum < selectedNum)) {
+            // 방향 적중 → 원금 + 절반
+            gain = bet + Math.floor(bet / 2);
+            coins += gain;
+            outcome = '✅ 방향 적중! ' + (direction === 'up' ? 'UP' : 'DOWN') +
+                      ' 선택, 합 ' + sum + ' → ' + bet + 'G + ' + Math.floor(bet/2) + 'G = ' +
+                      gain + 'G 획득 (보유: ' + coins + 'G)';
+            outcomeType = 'win';
+          } else {
+            // 실패 → 베팅금 차감
+            coins -= bet;
+            outcome = '❌ 실패. 합 ' + sum + ' (예상: ' + selectedNum + ', 방향: ' +
+                      (direction === 'up' ? 'UP' : 'DOWN') + ') → ' + bet + 'G 차감 (보유: ' + coins + 'G)';
+            outcomeType = 'lose';
+          }
+
+          showResult(outcome, outcomeType);
+          updateCoins();
+
+          if (coins <= 0) {
+            setTimeout(() => {
+              showResult('💀 코인을 모두 잃었습니다. 새로 시작하세요.', 'lose');
+            }, 300);
+          }
+
+          isRolling = false;
+          rollBtn.disabled = false;
+          betInput.max = coins;
+        }
+      }, 55);
+    }
+
+    rollBtn.addEventListener('click', roll);
+
+    // 엔터 키로도 굴리기
+    betInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') roll();
+    });
+
+    /* ── 새로 시작 ── */
+    newGameBtn.addEventListener('click', () => {
+      if (isRolling) return;
+      coins = STARTING_COINS;
+      selectedNum = 7;
+      direction = null;
+      updateCoins(true);
+      fillPips(die1, 1);
+      fillPips(die2, 1);
+      result.textContent = '';
+      result.className = 'result';
+      betInput.value = '';
+      betError.textContent = '';
+      selectedBet.textContent = '베팅: 미설정';
+      selectedDir.textContent = '선택: 없음';
+      upBtn.classList.remove('active-up', 'active-down');
+      downBtn.classList.remove('active-up', 'active-down');
+      [...row1.children, ...row2.children].forEach(c =>
+        c.classList.toggle('active', +c.dataset.num === 7));
+      betInput.max = coins;
+    });
+  </script>
+</body>
+</html>
