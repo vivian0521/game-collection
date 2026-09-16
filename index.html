@@ -34,7 +34,6 @@
     color: #e0e0e0;
   }
 
-  /* ── 코인 표시 ── */
   .coin-display {
     font-size: 1.3rem;
     margin-bottom: 1.2rem;
@@ -45,33 +44,28 @@
     border-radius: 30px;
     color: #ffd700;
   }
-
   .coin-display span { font-size: 1.6rem; }
 
   /* ── 예상 숫자 ── */
   .predict-section { margin-bottom: 1.2rem; }
-
   .predict-section > label {
     display: block;
     font-size: 0.95rem;
     color: #aaa;
     margin-bottom: 0.6rem;
   }
-
   .predict-rows {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
   }
-
   .predict-row {
     display: flex;
     justify-content: center;
     gap: 6px;
     flex-wrap: wrap;
   }
-
   .btn-num {
     width: 40px;
     height: 40px;
@@ -95,20 +89,17 @@
 
   /* ── UP / DOWN ── */
   .direction-section { margin-bottom: 1.2rem; }
-
   .direction-section > label {
     display: block;
     font-size: 0.95rem;
     color: #aaa;
     margin-bottom: 0.5rem;
   }
-
   .dir-row {
     display: flex;
     justify-content: center;
     gap: 12px;
   }
-
   .btn-dir {
     padding: 10px 32px;
     font-size: 1.1rem;
@@ -117,12 +108,16 @@
     color: #fff;
     border-radius: 30px;
     cursor: pointer;
-    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.1s;
     min-width: 100px;
+    user-select: none;
   }
   .btn-dir:hover {
     background: rgba(255,255,255,0.18);
     border-color: rgba(255,255,255,0.4);
+  }
+  .btn-dir:active {
+    transform: scale(0.96);
   }
   .btn-dir.active-up {
     background: #4ecdc4;
@@ -135,6 +130,31 @@
     box-shadow: 0 0 12px rgba(255,107,107,0.5);
   }
 
+  /* ── 비활성화 상태일 때 ── */
+  .btn-dir.disabled {
+    background: rgba(120,120,120,0.15);
+    border-color: rgba(120,120,120,0.25);
+    color: rgba(255,255,255,0.35);
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn-dir.disabled:hover {
+    background: rgba(120,120,120,0.15);
+    border-color: rgba(120,120,120,0.25);
+    color: rgba(255,255,255,0.35);
+  }
+  .btn-dir.disabled:active {
+    transform: none;
+  }
+  .btn-dir.disabled.active-up,
+  .btn-dir.disabled.active-down {
+    background: rgba(120,120,120,0.15);
+    border-color: rgba(120,120,120,0.25);
+    color: rgba(255,255,255,0.35);
+    box-shadow: none;
+  }
+
   .selected-dir {
     margin-top: 0.5rem;
     font-size: 1rem;
@@ -144,21 +164,18 @@
 
   /* ── 베팅 금액 ── */
   .bet-section { margin-bottom: 1.2rem; }
-
   .bet-section > label {
     display: block;
     font-size: 0.95rem;
     color: #aaa;
     margin-bottom: 0.5rem;
   }
-
   .bet-input-row {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
   }
-
   .bet-input {
     width: 120px;
     padding: 10px 12px;
@@ -171,18 +188,14 @@
     outline: none;
     transition: border-color 0.2s;
   }
-  .bet-input:focus {
-    border-color: #667eea;
-  }
+  .bet-input:focus { border-color: #667eea; }
   .bet-input::placeholder { color: #666; }
-
   .bet-error {
     color: #ff7a7a;
     font-size: 0.85rem;
     min-height: 1rem;
     margin-top: 0.4rem;
   }
-
   .selected-bet {
     margin-top: 0.5rem;
     font-size: 1rem;
@@ -199,7 +212,6 @@
     min-height: 120px;
     align-items: center;
   }
-
   .die {
     width: 110px;
     height: 110px;
@@ -210,7 +222,6 @@
     user-select: none;
   }
   .die.rolling { animation: shake 0.5s ease-in-out; }
-
   @keyframes shake {
     0%, 100% { transform: rotate(0deg) scale(1); }
     15%      { transform: rotate(-18deg) scale(1.12); }
@@ -220,7 +231,6 @@
     75%      { transform: rotate(-5deg) scale(1); }
     90%      { transform: rotate(3deg)  scale(1); }
   }
-
   .pip {
     position: absolute;
     width: 20px;
@@ -228,7 +238,6 @@
     background: #222;
     border-radius: 50%;
   }
-
   .die[data-value="1"] .pip { top: 50%; left: 50%; margin: -10px 0 0 -10px; }
   .die[data-value="2"] .pip:nth-child(1) { top: 16%; left: 84%; margin: -10px 0 0 -10px; }
   .die[data-value="2"] .pip:nth-child(2) { top: 84%; left: 16%; margin: -10px 0 0 -10px; }
@@ -260,7 +269,6 @@
   }
   .result.win  { color: #7ae07a; font-size: 1.6rem; font-weight: bold; }
   .result.lose { color: #ff7a7a; font-size: 1.4rem; }
-
   @keyframes popIn {
     0%   { transform: scale(0.6); opacity: 0; }
     70%  { transform: scale(1.1); }
@@ -287,7 +295,6 @@
     transform: none;
     box-shadow: none;
   }
-
   .new-game-btn {
     margin-top: 0.8rem;
     padding: 8px 20px;
@@ -322,7 +329,7 @@
 
     <div class="predict-section">
       <label>예상할 합 (2 ~ 12) 을 선택하세요</label>
-      <div class="predict-rows" id="predictRows">
+      <div class="predict-rows">
         <div class="predict-row" id="row1"></div>
         <div class="predict-row" id="row2"></div>
       </div>
@@ -341,7 +348,7 @@
       <label>베팅할 금액을 숫자로 입력하세요 (최대 보유 코인 이내)</label>
       <div class="bet-input-row">
         <input type="number" class="bet-input" id="betInput"
-               placeholder="베팅 금액" min="1" max="500" inputmode="numeric">
+               placeholder="베팅 금액" min="1" inputmode="numeric">
       </div>
       <div class="bet-error" id="betError"></div>
       <div class="selected-bet" id="selectedBet">베팅: 미설정</div>
@@ -359,9 +366,11 @@
 
     <div class="rules">
       <p><strong>규칙</strong></p>
-      <p>• 예상 숫자 정확히 일치 → 베팅금 × 2 (원금 포함 2배 획득)</p>
-      <p>• UP 선택 & 나온 합 &gt; 예상 숫자 → 베팅금 + 베팅금의 절반 획득</p>
-      <p>• DOWN 선택 & 나온 합 &lt; 예상 숫자 → 베팅금 + 베팅금의 절반 획득</p>
+      <p>• 예상 합 2를 선택하면 UP 버튼이 비활성화됩니다.</p>
+      <p>• 예상 합 12를 선택하면 DOWN 버튼이 비활성화됩니다.</p>
+      <p>• 예상 합 정확히 일치 → 베팅금 × 2 (원금 포함 2배 획득)</p>
+      <p>• UP 선택 & 나온 합 &gt; 예상 합 → 베팅금 + 베팅금의 절반 획득</p>
+      <p>• DOWN 선택 & 나온 합 &lt; 예상 합 → 베팅금 + 베팅금의 절반 획득</p>
       <p>• 위 조건에 못 미치면 베팅금 전액 차감</p>
       <p>• 베팅 금액이 보유 코인보다 크면 굴리기 불가</p>
     </div>
@@ -387,11 +396,11 @@
     /* ── 상태 ── */
     const STARTING_COINS = 500;
     let coins = STARTING_COINS;
-    let selectedNum = 7;     // 기본 예상 숫자
-    let direction   = null;  // 'up' | 'down' | null
+    let selectedNum = 7;
+    let direction   = null;
     let isRolling   = false;
 
-    // 초기 주사위 눈
+    /* ── 주사위 pip 채우기 ── */
     function fillPips(dieEl, value) {
       dieEl.innerHTML = '';
       for (let i = 0; i < value; i++) {
@@ -404,14 +413,13 @@
     fillPips(die1, 1);
     fillPips(die2, 1);
 
-    /* ── 예상 숫자 버튼 (2줄 배치) ── */
+    /* ── 예상 숫자 버튼 생성 (2줄) ── */
     const NUMBERS = [];
     for (let n = 2; n <= 12; n++) NUMBERS.push(n);
 
-    // 11개 → 윗줄 6개, 아랫줄 5개
     const MID = 6;
-    const topNums    = NUMBERS.slice(0, MID);     // 2,3,4,5,6,7
-    const bottomNums = NUMBERS.slice(MID);        // 8,9,10,11,12
+    const topNums    = NUMBERS.slice(0, MID);     // 2,3,4,5,6,7 (6개)
+    const bottomNums = NUMBERS.slice(MID);        // 8,9,10,11,12 (5개)
 
     function makeNumButton(n) {
       const btn = document.createElement('button');
@@ -423,6 +431,7 @@
         selectedNum = n;
         [...row1.children, ...row2.children].forEach(c =>
           c.classList.toggle('active', +c.dataset.num === n));
+        enforceConstraints();
       });
       return btn;
     }
@@ -430,19 +439,92 @@
     topNums.forEach(n => row1.appendChild(makeNumButton(n)));
     bottomNums.forEach(n => row2.appendChild(makeNumButton(n)));
 
-    /* ── UP / DOWN ── */
-    function setDirection(dir) {
-      if (isRolling) return;
-      direction = dir;
-      upBtn.classList.toggle('active-up', dir === 'up');
-      upBtn.classList.toggle('active-down', false);
-      downBtn.classList.toggle('active-down', dir === 'down');
-      downBtn.classList.toggle('active-up', false);
-      selectedDir.textContent = dir === 'up' ? '선택: UP (더 높게)' :
-                                dir === 'down' ? '선택: DOWN (더 낮게)' : '선택: 없음';
+    /* ── 제약 조건 강제 ── */
+    function enforceConstraints() {
+      // 2가 선택됐으면 UP 비활성화
+      if (selectedNum === 2) {
+        if (direction === 'up') {
+          direction = null;
+        }
+        upBtn.classList.add('disabled');
+        upBtn.classList.remove('active-up');
+      } else {
+        upBtn.classList.remove('disabled');
+      }
+
+      // 12가 선택됐으면 DOWN 비활성화
+      if (selectedNum === 12) {
+        if (direction === 'down') {
+          direction = null;
+        }
+        downBtn.classList.add('disabled');
+        downBtn.classList.remove('active-down');
+      } else {
+        downBtn.classList.remove('disabled');
+      }
+
+      // 방향 표시 업데이트
+      updateDirectionDisplay();
     }
-    upBtn.addEventListener('click', () => setDirection(direction === 'up' ? null : 'up'));
-    downBtn.addEventListener('click', () => setDirection(direction === 'down' ? null : 'down'));
+
+    function updateDirectionDisplay() {
+      if (direction === 'up') {
+        selectedDir.textContent = '선택: UP (더 높게)';
+      } else if (direction === 'down') {
+        selectedDir.textContent = '선택: DOWN (더 낮게)';
+      } else {
+        selectedDir.textContent = '선택: 없음';
+      }
+    }
+
+    /* ── UP / DOWN 토글 ── */
+    function toggleUp() {
+      if (isRolling) return;
+      // 2가 선택돼 있으면 UP 선택 불가
+      if (selectedNum === 2) {
+        betError.textContent = '예상 합 2에서는 UP을 선택할 수 없습니다.';
+        return;
+      }
+      betError.textContent = '';
+
+      if (direction === 'up') {
+        direction = null;
+        upBtn.classList.remove('active-up');
+      } else {
+        // 이미 DOWN이 선택돼 있었으면 해제
+        if (direction === 'down') {
+          downBtn.classList.remove('active-down');
+        }
+        direction = 'up';
+        upBtn.classList.add('active-up');
+      }
+      updateDirectionDisplay();
+    }
+
+    function toggleDown() {
+      if (isRolling) return;
+      // 12가 선택돼 있으면 DOWN 선택 불가
+      if (selectedNum === 12) {
+        betError.textContent = '예상 합 12에서는 DOWN을 선택할 수 없습니다.';
+        return;
+      }
+      betError.textContent = '';
+
+      if (direction === 'down') {
+        direction = null;
+        downBtn.classList.remove('active-down');
+      } else {
+        if (direction === 'up') {
+          upBtn.classList.remove('active-up');
+        }
+        direction = 'down';
+        downBtn.classList.add('active-down');
+      }
+      updateDirectionDisplay();
+    }
+
+    upBtn.addEventListener('click', toggleUp);
+    downBtn.addEventListener('click', toggleDown);
 
     /* ── 베팅 금액 입력 ── */
     betInput.addEventListener('input', () => {
@@ -460,16 +542,12 @@
       selectedBet.textContent = '베팅: ' + val + 'G';
     });
 
-    /* ── 코인 업데이트 ── */
-    function updateCoins(display = false) {
+    function updateCoins() {
       coinsEl.textContent = coins;
-      if (display) betInput.max = coins;
+      betInput.max = coins;
     }
-    updateCoins(true);
+    updateCoins();
 
-    betInput.max = coins;
-
-    /* ── 결과 표시 ── */
     function showResult(text, type) {
       result.textContent = text;
       result.className = 'result ' + type;
@@ -479,7 +557,6 @@
     function roll() {
       if (isRolling) return;
 
-      // 입력값 파싱
       const betRaw = parseInt(betInput.value, 10);
       if (betInput.value === '' || isNaN(betRaw) || betRaw <= 0) {
         betError.textContent = '베팅 금액을 입력하세요.';
@@ -501,7 +578,6 @@
       result.textContent = '';
       result.className = 'result';
 
-      // 굴리기 애니메이션
       die1.classList.add('rolling');
       die2.classList.add('rolling');
 
@@ -527,7 +603,6 @@
           let gain = 0;
 
           if (sum === selectedNum) {
-            // 정확히 일치 → 2배
             gain = bet * 2;
             coins += gain;
             outcome = '🎉 대성공! 예상 합 ' + selectedNum + ' 정확히 적중! ' +
@@ -535,7 +610,6 @@
             outcomeType = 'win';
           } else if ((direction === 'up' && sum > selectedNum) ||
                      (direction === 'down' && sum < selectedNum)) {
-            // 방향 적중 → 원금 + 절반
             gain = bet + Math.floor(bet / 2);
             coins += gain;
             outcome = '✅ 방향 적중! ' + (direction === 'up' ? 'UP' : 'DOWN') +
@@ -543,7 +617,6 @@
                       gain + 'G 획득 (보유: ' + coins + 'G)';
             outcomeType = 'win';
           } else {
-            // 실패 → 베팅금 차감
             coins -= bet;
             outcome = '❌ 실패. 합 ' + sum + ' (예상: ' + selectedNum + ', 방향: ' +
                       (direction === 'up' ? 'UP' : 'DOWN') + ') → ' + bet + 'G 차감 (보유: ' + coins + 'G)';
@@ -567,8 +640,6 @@
     }
 
     rollBtn.addEventListener('click', roll);
-
-    // 엔터 키로도 굴리기
     betInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') roll();
     });
@@ -579,7 +650,7 @@
       coins = STARTING_COINS;
       selectedNum = 7;
       direction = null;
-      updateCoins(true);
+      updateCoins();
       fillPips(die1, 1);
       fillPips(die2, 1);
       result.textContent = '';
@@ -587,13 +658,15 @@
       betInput.value = '';
       betError.textContent = '';
       selectedBet.textContent = '베팅: 미설정';
-      selectedDir.textContent = '선택: 없음';
-      upBtn.classList.remove('active-up', 'active-down');
-      downBtn.classList.remove('active-up', 'active-down');
+      upBtn.classList.remove('active-up', 'active-down', 'disabled');
+      downBtn.classList.remove('active-up', 'active-down', 'disabled');
       [...row1.children, ...row2.children].forEach(c =>
         c.classList.toggle('active', +c.dataset.num === 7));
-      betInput.max = coins;
+      updateDirectionDisplay();
     });
+
+    // 초기 상태 반영 (7 선택 시 제약 없음)
+    enforceConstraints();
   </script>
 </body>
 </html>
